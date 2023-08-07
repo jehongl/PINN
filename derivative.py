@@ -47,3 +47,6 @@ def y2x_bottom(x):
 laplace_kernel = torch.Tensor([[1,1,1], [1,-8,1], [1,1,1]]).unsqueeze(0).unsqueeze(1).cuda()
 def laplace(x):
     return F.conv2d(x, laplace_kernel, padding=(1,1))
+
+def rot_mac(a):
+	return torch.cat([-dx_right(a),dy_bottom(a)],dim=1)

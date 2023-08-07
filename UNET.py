@@ -63,10 +63,10 @@ class OutConv(nn.Module):
 	def forward(self, x):
 		return self.conv(x)
 
-class UNET(nn.Module):
+class PDE_UNET(nn.Module):
 
     def __init__(self, hidden_size=64,bilinear=True):
-        super(UNET, self).__init__()
+        super(PDE_UNET, self).__init__()
         self.hidden_size = hidden_size
         self.bilinear = bilinear
 
@@ -84,27 +84,16 @@ class UNET(nn.Module):
 
     def forward(self,a_old,p_old,mask_flow,v_cond,mask_cond):
         v_old = rot_mac(a_old)
-        x = torch.cat([p_old,a_old,v_old,mask_flow,v_cond*mask_cond,mask_cond,mask_flow*p_old,mask_flow*v_old,v_old*mask_cond],dim=1)
-        print("size of input :", x.size())
+        
         x1 = self.inc(x)
-        print("size of x1 :", x1.size())
         x2 = self.down1(x1)
-        print("size of x2 :", x2.size())
         x3 = self.down2(x2)
-        print("size of x3 :", x3.size())
         x4 = self.down3(x3)
-        print("size of x4 :", x4.size())
         x5 = self.down4(x4)
-        print("size of x5 :", x5.size())
         x = self.up1(x5, x4)
-        print("size of up1 :", x.size())
         x = self.up2(x, x3)
-        print("size of up2 :", x.size())
         x = self.up3(x, x2)
-        print("size of up3 :", x.size())
         x = self.up4(x, x1)
-        print("size of up4 :", x.size())
         x = self.outc(x)
-        print("size of output :", x.size())
         a_new, p_new = 400*torch.tanh(x[:,0:1]/400), 10*torch.tanh(x[:,1:2]/10)
         return a_new,p_new

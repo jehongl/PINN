@@ -1,8 +1,4 @@
 # PINN
-```
-conda create --name PINN_fluid_model python=3.9  
-source activate PINN_fluid_model
-```
 
 ```
 conda create --name PINN_fluid_model python=3.9  

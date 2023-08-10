@@ -84,7 +84,7 @@ class PDE_UNET(nn.Module):
 
     def forward(self,a_old,p_old,mask_flow,v_cond,mask_cond):
         v_old = rot_mac(a_old)
-        
+        x = torch.cat([p_old,a_old,v_old,mask_flow,v_cond*mask_cond,mask_cond,mask_flow*p_old,mask_flow*v_old,v_old*mask_cond],dim=1)
         x1 = self.inc(x)
         x2 = self.down1(x1)
         x3 = self.down2(x2)

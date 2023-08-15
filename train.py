@@ -2,9 +2,14 @@ import torch
 import torch.optim as optim
 import numpy as np
 from derivative import dx, dy, dy_top, dy_bottom, dx_right, dx_left, x2y_left, x2y_right,  y2x_bottom,  y2x_top, laplace, rot_mac
+<<<<<<< HEAD
 from UNET import PDE_UNet3
 from Loss_function import Loss_function
 import copy
+=======
+from UNET import PDE_UNET
+from Loss_function import Loss_function
+>>>>>>> 1aeaf072a67ffcc11f8bab9d61a7e455c70e56d4
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -24,12 +29,21 @@ v_cond[:,:,10:90,0:5] = 0.5
 v_cond[:,:,10:90,195:200] = 0.5
 
 
+<<<<<<< HEAD
 fluid_model = PDE_UNet3(hidden_size=64, bilinear=True).cuda()
 fluid_model.train()
 optimizer = optim.Adam(fluid_model.parameters(), lr = 0.01)
 
 for epoch in range(100):
     for i in range(64):
+=======
+fluid_model = PDE_UNET.cuda()
+optimizer = optim.Adam(fluid_model.parameters(), lr = 0.001)
+
+for epoch in range(100):
+
+    for i in range(10):
+>>>>>>> 1aeaf072a67ffcc11f8bab9d61a7e455c70e56d4
         v_old = rot_mac(a_old)
 
         a_new, p_new = fluid_model(a_old, p_old, mask_flow, v_cond, mask_cond)
@@ -45,7 +59,12 @@ for epoch in range(100):
         p_new = (p_new - torch.mean(p_new, dim = (1,2,3)).unsqueeze(1).unsqueeze(2).unsqueeze(3))
         a_new = (p_new - torch.mean(a_new, dim = (1,2,3)).unsqueeze(1).unsqueeze(2).unsqueeze(3))
 
+<<<<<<< HEAD
         a_old = a_new.clone().detach()
         p_old = p_new.clone().detach()
+=======
+        a_old = a_new
+        p_old = p_new
+>>>>>>> 1aeaf072a67ffcc11f8bab9d61a7e455c70e56d4
 
         print(f"{epoch}: i:{i}: loss: {loss}")
